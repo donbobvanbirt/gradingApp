@@ -1,8 +1,10 @@
 import AppDispatcher from '../AppDispatcher';
 import { EventEmitter } from 'events';
 
-let _assignments = [];
-let _totals = {
+import Storage from '../Storage';
+
+let _assignments = Storage.read('assignments') || [];
+let _totals = Storage.read('totals') || {
   score: 0,
   possible: 0,
   grade: ''
@@ -43,6 +45,10 @@ class AssignmentStore extends EventEmitter {
           this.emit('CHANGE')
         break
       }
+    });
+    this.on('CHANGE', () => {
+      Storage.write('assignments', _assignments);
+      Storage.write('totals', _totals);
     })
   }
 
